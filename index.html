@@ -247,8 +247,86 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 .tst{position:fixed;bottom:132px;left:50%;transform:translateX(-50%) translateY(8px);padding:13px 24px;border-radius:18px;font-size:13.5px;font-weight:600;z-index:400;opacity:0;transition:.3s;pointer-events:none;white-space:nowrap;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(30px) saturate(190%);-webkit-backdrop-filter:blur(30px) saturate(190%);box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 8px 28px rgba(0,0,0,.3);color:#fff}
 .tst.on{opacity:1;transform:translateX(-50%) translateY(0)}
 
+/* AÇÕES DE CADASTRO */
+.add-in{height:34px;min-width:34px;padding:0 11px;border-radius:12px;border:1px solid rgba(255,255,255,.22);display:inline-flex;align-items:center;justify-content:center;gap:6px;color:#fff;background:linear-gradient(150deg,rgba(165,148,245,.5),rgba(123,104,232,.42));box-shadow:inset 0 1px 0 rgba(255,255,255,.3),0 4px 14px rgba(123,104,232,.22);font:inherit;cursor:pointer;flex-shrink:0;position:relative;z-index:2}
+.add-in:active{transform:scale(.96)}
+.add-in b{font-size:21px;font-weight:400;line-height:1}
+.add-in span{font-size:11.5px;font-weight:700}
+.rst-meta,.card-head{display:flex;align-items:center;gap:9px}
+.rst-hd{align-items:center}
+.card-head{justify-content:space-between;position:relative;z-index:2}
+.emp .add-in{margin:16px auto 0}
+@media(max-width:959px){.fab{display:none}}
+@media(max-width:599px){
+ #app.compact .hd{padding:calc(env(safe-area-inset-top) + 8px) 13px 7px;gap:8px}
+ #app.compact .greet{font-size:11.5px}
+ #app.compact .title{font-size:22px;letter-spacing:-.7px}
+ #app.compact .hd-r{gap:5px;margin-top:2px}
+ #app.compact .mnav{padding:3px}
+ #app.compact .mnav button{width:24px;height:27px}
+ #app.compact .mnav span{font-size:12px;padding:0 3px}
+ #app.compact .ib{width:35px;height:35px;border-radius:12px}
+ #app.compact .wrap{padding:0 12px}
+ #app.compact .hero{padding:14px;margin-bottom:8px;border-radius:20px}
+ #app.compact .hero-top{gap:10px}
+ #app.compact .hero-l{font-size:11.5px}
+ #app.compact .hero-v{font-size:32px;letter-spacing:-1.5px}
+ #app.compact .hero-v small{font-size:17px}
+ #app.compact .chip{padding:4px 9px;font-size:10.5px;margin-top:8px}
+ #app.compact .ring,#app.compact .ring svg{width:82px;height:82px}
+ #app.compact .ring-n{font-size:19px}
+ #app.compact .ring-n span{font-size:10px}
+ #app.compact .ring-t{font-size:7.5px;margin-top:2px}
+ #app.compact .pills{gap:6px;margin-top:11px}
+ #app.compact .pl{padding:8px 9px;border-radius:13px}
+ #app.compact .pl-l{font-size:9.5px}
+ #app.compact .pl-v{font-size:13px}
+ #app.compact .card{padding:12px;margin-bottom:8px;border-radius:20px}
+ #app.compact .c-lbl{font-size:13.5px;margin-bottom:9px}
+ #app.compact .fp-row{margin-bottom:7px}
+ #app.compact .fp-t{font-size:13px}
+ #app.compact .fp-v{font-size:14px}
+ #app.compact .pbar{height:6px}
+ #app.compact .fp-sub{margin-top:6px;font-size:10px}
+ #app.compact .pt{padding:13px;margin-bottom:8px;border-radius:20px}
+ #app.compact .pt-tag{font-size:8.5px;margin-bottom:6px}
+ #app.compact .pt-h{font-size:14px;margin-bottom:8px;line-height:1.25}
+ #app.compact .pt-g{gap:20px}
+ #app.compact .pt-l{font-size:9.5px}
+ #app.compact .pt-v{font-size:15px}
+ #app.compact .pt-b{padding:4px 10px;font-size:10px;margin-top:8px}
+ #app.compact .pt-r{padding:6px 11px;font-size:10px;margin-top:8px}
+ #app.compact .sg{gap:7px}
+ #app.compact .st{padding:9px 11px;border-radius:17px}
+ #app.compact .st svg{width:16px;height:16px;margin-bottom:5px}
+ #app.compact .st-l{font-size:10px;margin-bottom:1px}
+ #app.compact .st-v{font-size:16px}
+ #app.compact .st.delta .st-v{font-size:11px!important;margin-top:1px!important;line-height:1.2!important}
+ #app.compact .seg{padding:3px;margin-bottom:8px;border-radius:14px}
+ #app.compact .seg button{padding:8px;font-size:12px;border-radius:11px}
+ #app.compact .ins{padding:13px;margin-bottom:8px;border-radius:20px}
+ #app.compact .ins-t{font-size:8.5px;margin-bottom:8px;letter-spacing:1.3px}
+ #app.compact .ins-h{font-size:16.5px;line-height:1.25;letter-spacing:-.4px}
+ #app.compact .ins-d{margin:10px 0}
+ #app.compact .ins-b{font-size:12px;line-height:1.42}
+ #app.compact .hbar{height:32px;margin-bottom:9px}
+ #app.compact .hseg{border-radius:8px;font-size:11px}
+ #app.compact .hleg{gap:6px 10px}
+ #app.compact .hl-i{gap:5px;font-size:10.5px}
+ #app.compact .hl-d{width:7px;height:7px;border-radius:2px}
+ #app.compact .dn-w{gap:10px}
+ #app.compact .dn-c,#app.compact .dn-c svg{width:104px;height:104px}
+ #app.compact .dn-t{font-size:7.5px}
+ #app.compact .dn-v{font-size:13px}
+ #app.compact .dn-l{gap:6px}
+ #app.compact .dn-r{gap:6px;font-size:11.5px}
+ #app.compact .dn-d{width:7px;height:7px}
+ #app.compact .dn-pc{font-size:11px}
+}
+
 /* DESKTOP */
 @media(min-width:960px){
+  .add-in{display:none}
   body{max-width:100%}
   #app{padding-bottom:0;display:none}
   #app.dtk{display:block}
@@ -473,6 +551,7 @@ auth.onAuthStateChanged(async u=>{
 function render(){
  const app=document.getElementById('app');
  app.classList.toggle('dtk',isDT());
+ app.classList.toggle('compact',!isDT()&&(tab==='resumo'||tab==='anual'));
  app.innerHTML=isDT()?dtShell():mbShell();
  if(tab==='anual')setTimeout(drawDonut,10);
 }
@@ -580,18 +659,20 @@ function vResumo(md,c){
   <div class="st g">${svg(I.home,'stroke:#A594F5')}<div class="st-l">Contas fixas</div><div class="st-v">${hvs(c.fT)}</div></div>
   <div class="st g">${svg(I.cart,'stroke:#FFB86C')}<div class="st-l">Variáveis</div><div class="st-v">${hvs(c.vT)}</div></div>
   <div class="st g">${svg(I.gift,'stroke:#5FE3B0')}<div class="st-l">Guardado no mês</div><div class="st-v">${hvs(c.aT)}</div></div>
-  <div class="st g" onclick="go('anual')" style="cursor:pointer">${svg(I.chart,'stroke:#A594F5')}<div class="st-l">O que mudou</div><div class="st-v" style="font-size:13.5px;font-weight:600;letter-spacing:-.2px;margin-top:3px;line-height:1.35">${delta}</div></div>
+  <div class="st delta g" onclick="go('anual')" style="cursor:pointer">${svg(I.chart,'stroke:#A594F5')}<div class="st-l">O que mudou</div><div class="st-v" style="font-size:13.5px;font-weight:600;letter-spacing:-.2px;margin-top:3px;line-height:1.35">${delta}</div></div>
  </div>`;
 }
 
+function addIn(sheet,label){return `<button class="add-in" onclick="openSh('${sheet}')" aria-label="${label}"><b>+</b><span>${label}</span></button>`;}
+
 function vFixas(md){
- if(!md.fixas.length)return`<div class="lst g"><div class="emp">${svg(I.inbox)}Nenhuma conta fixa ainda.<br>Toque no + para adicionar a primeira.</div></div>`;
+ if(!md.fixas.length)return`<div class="lst g"><div class="emp">${svg(I.inbox)}Nenhuma conta fixa ainda.<br>Adicione sua primeira conta.<br>${addIn('sh-fx','Adicionar')}</div></div>`;
  const tot=md.fixas.reduce((s,f)=>s+Number(f.valor),0);
  const pg=md.fixas.filter(f=>md.pagos[f.id]).reduce((s,f)=>s+Number(f.valor),0);
  const pct=tot?Math.round(pg/tot*100):0;
  return`
  <div class="rst rst-pp g">
-  <div class="rst-hd"><span class="rst-l">Resta pagar em fixas</span><span class="rst-p">${pct}% quitado</span></div>
+  <div class="rst-hd"><span class="rst-l">Resta pagar em fixas</span><div class="rst-meta"><span class="rst-p">${pct}% quitado</span>${addIn('sh-fx','Adicionar')}</div></div>
   <div class="rst-v">${hv(tot-pg)}</div>
   <div class="pbar rel"><div class="pfill" style="width:${pct}%;background:#fff"></div></div>
   <div class="rst-s"><span>${hv(pg)} pago</span><span>de ${hv(tot)}</span></div>
@@ -606,7 +687,7 @@ function vFixas(md){
 }
 
 function vVars(md){
- if(!md.variaveis.length)return`<div class="lst g"><div class="emp">${svg(I.inbox)}Nenhum gasto variável ainda.<br>Toque no + para adicionar.</div></div>`;
+ if(!md.variaveis.length)return`<div class="lst g"><div class="emp">${svg(I.inbox)}Nenhum gasto variável ainda.<br>Adicione um gasto deste mês.<br>${addIn('sh-vr','Adicionar')}</div></div>`;
  const tot=md.variaveis.reduce((s,v)=>s+Number(v.valor),0);
  const pg=md.variaveis.filter(v=>md.pagosVar[v.id]).reduce((s,v)=>s+Number(v.valor),0);
  const pct=tot?Math.round(pg/tot*100):0;
@@ -614,7 +695,7 @@ function vVars(md){
  const ord=Object.entries(cats).sort((a,b)=>b[1].reduce((s,x)=>s+Number(x.valor),0)-a[1].reduce((s,x)=>s+Number(x.valor),0));
  return`
  <div class="rst rst-or g">
-  <div class="rst-hd"><span class="rst-l">Resta pagar em variáveis</span><span class="rst-p">${pct}% quitado</span></div>
+  <div class="rst-hd"><span class="rst-l">Resta pagar em variáveis</span><div class="rst-meta"><span class="rst-p">${pct}% quitado</span>${addIn('sh-vr','Adicionar')}</div></div>
   <div class="rst-v">${hv(tot-pg)}</div>
   <div class="pbar rel"><div class="pfill" style="width:${pct}%;background:#fff"></div></div>
   <div class="rst-s"><span>${hv(pg)} pago</span><span>de ${hv(tot)}</span></div>
@@ -633,7 +714,7 @@ function vVars(md){
 
 function vCofres(md){
  const cfs=U.cofrinhos||[];
- if(!cfs.length)return`<div class="lst g"><div class="emp">${svg(I.gift)}Nenhum cofrinho ainda.<br>Toque no + para criar seu primeiro objetivo.</div></div>`;
+ if(!cfs.length)return`<div class="lst g"><div class="emp">${svg(I.gift)}Nenhum cofrinho ainda.<br>Crie seu primeiro objetivo.<br>${addIn('sh-cf','Adicionar')}</div></div>`;
  const totG=cfs.reduce((s,c)=>s+totalCof(c.id),0);
  const mesG=md.aportes.reduce((s,a)=>s+Number(a.valor),0);
  let proj='';
@@ -644,7 +725,7 @@ function vCofres(md){
  return`
  <div class="card g" style="background:linear-gradient(150deg,rgba(95,227,176,.16),rgba(255,255,255,.05))">
   <div class="rel">
-   <div class="hero-l">Você já guardou, no total</div>
+   <div class="card-head"><div class="hero-l">Você já guardou, no total</div>${addIn('sh-cf','Novo cofrinho')}</div>
    <div style="font-size:35px;font-weight:800;letter-spacing:-1.7px;margin:3px 0 11px;text-shadow:0 2px 16px rgba(0,0,0,.24)">${hv(totG)}</div>
    <div style="font-size:13.5px;color:var(--txt2);line-height:1.62">${proj}</div>
   </div>
