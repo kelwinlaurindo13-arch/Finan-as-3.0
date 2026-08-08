@@ -387,6 +387,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
   </div>
 </div>
 
+<!-- APP -->
+<div id="app" aria-live="polite"></div>
+
 <!-- SHEETS -->
 <div class="ov" id="ov" onclick="closeSh()"></div>
 <div class="sh" id="sh-fx"><div class="sh-g"></div><div class="sh-t">Nova conta fixa</div>
@@ -575,6 +578,7 @@ async function doAuth(){
 }
 auth.onAuthStateChanged(async u=>{
  if(u){uid=u.uid;
+  try{
   let accessDoc;
   try{accessDoc=await db.collection('access').doc(uid).get();}
   catch(e){console.error(e);showGate('Não foi possível validar o acesso','Confira sua conexão ou fale com o administrador.');return;}
@@ -588,6 +592,11 @@ auth.onAuthStateChanged(async u=>{
   document.getElementById('auth').style.display='none';
   document.getElementById('app').style.display='block';
   render();watchAccess();if(partnerAllowed())fetchP();
+  }catch(e){
+   console.error(e);
+   showGate('N\u00e3o foi poss\u00edvel carregar seus dados',
+    'O aplicativo encontrou um problema ao abrir suas informa\u00e7\u00f5es. Tente novamente e, se continuar, fale com o administrador.');
+  }
  }else{
   if(accessWatch){accessWatch();accessWatch=null;}
   uid='';ACCESS=null;pData=null;
