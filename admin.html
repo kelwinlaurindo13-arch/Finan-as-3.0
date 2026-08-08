@@ -1,0 +1,408 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Finanças Admin</title>
+<style>
+:root{--bg:#0c0916;--card:#191229;--line:#ffffff18;--tx:#f7f4ff;--mut:#aaa2bb;--pp:#a594f5;--gr:#5fe3b0;--rd:#ff9cb0}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(circle at 10% 0,#281743,transparent 35%),var(--bg);color:var(--tx);font:14px -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+button,input,select{font:inherit}
+.hidden{display:none!important}
+.center{min-height:100vh;display:grid;place-items:center;padding:24px}
+.login,.panel,.stat{background:#191229ed;border:1px solid var(--line);border-radius:20px}
+.login{width:min(410px,100%);padding:30px}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:42px;height:42px;border-radius:13px;background:linear-gradient(145deg,var(--pp),#6553c8);display:grid;place-items:center;font-size:22px;font-weight:800}
+.brand h1{font-size:19px;margin:0}
+.brand p,.hint{color:var(--mut);font-size:12px;line-height:1.5;margin:3px 0 0}
+.field{margin:15px 0}
+.field label{display:block;color:var(--mut);font-size:11px;font-weight:700;margin-bottom:6px}
+.inp{width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:11px;background:#ffffff0c;color:var(--tx);outline:0}
+.inp:focus{border-color:#a594f5aa}
+.inp option{background:#201733}
+.btn{padding:11px 14px;border:0;border-radius:11px;background:linear-gradient(145deg,#8c7ae6,#6553c8);color:white;font-weight:750;cursor:pointer}
+.btn.alt{background:#ffffff0d;border:1px solid var(--line)}
+.btn.red{background:#ff9cb01a;border:1px solid #ff9cb044;color:var(--rd)}
+.btn.green{background:#5fe3b01a;border:1px solid #5fe3b044;color:var(--gr)}
+.btn:disabled{opacity:.5}
+.login .btn{width:100%}
+.err{color:var(--rd);font-size:12px;min-height:18px;margin-top:10px}
+header{height:70px;padding:0 25px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:#0c0916dd;position:sticky;top:0;z-index:4}
+.logout{color:var(--pp);background:none;border:0;cursor:pointer}
+.page{max-width:1280px;margin:auto;padding:22px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px}
+.stat{padding:15px}
+.stat span{color:var(--mut);font-size:11px}
+.stat b{display:block;font-size:23px;margin-top:4px}
+.layout{display:grid;grid-template-columns:320px 1fr;gap:16px}
+.panel{overflow:hidden}
+.ph{padding:17px;border-bottom:1px solid var(--line)}
+.ph h2{font-size:15px;margin:0 0 3px}
+.search{display:flex;gap:7px;margin-top:12px}
+.list{padding:7px;max-height:680px;overflow:auto}
+.row{width:100%;padding:11px;border:1px solid transparent;border-radius:11px;background:none;color:var(--tx);text-align:left;display:flex;justify-content:space-between;cursor:pointer}
+.row:hover,.row.on{background:#a594f519;border-color:#a594f533}
+.row b,.row small{display:block}
+.row small{color:var(--mut);font-size:10px;margin-top:3px}
+.tag{font-size:9px;border-radius:999px;padding:5px 7px;height:max-content}
+.active{color:var(--gr);background:#5fe3b016}
+.blocked{color:var(--rd);background:#ff9cb016}
+.form{padding:18px}
+.box{border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px}
+.box h3{font-size:13px;margin:0 0 10px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.grid .field{margin:7px 0}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.note{padding:10px 12px;border-radius:11px;background:#ffc46b12;border:1px solid #ffc46b33;color:#ffe0aa;font-size:11px;line-height:1.5;margin-bottom:12px}
+.check{display:flex;gap:7px;align-items:center;color:var(--mut);font-size:12px;margin-top:10px}
+.check input{accent-color:var(--pp)}
+.empty{padding:24px;text-align:center;color:var(--mut)}
+.toast{position:fixed;right:20px;bottom:20px;padding:12px 15px;background:#2b2142;border:1px solid var(--line);border-radius:11px;opacity:0;transform:translateY(8px);transition:.2s}
+.toast.on{opacity:1;transform:none}
+@media(max-width:850px){.stats{grid-template-columns:1fr 1fr}.layout{grid-template-columns:1fr}.grid{grid-template-columns:1fr}.page{padding:14px}}
+</style>
+</head>
+<body>
+<section id="login" class="center">
+<div class="login">
+<div class="brand"><div class="logo">F</div><div><h1>Finanças Admin</h1><p>Controle de usuários e casais</p></div></div>
+<form id="loginForm">
+<div class="field"><label>E-mail do administrador</label><input class="inp" id="le" type="email" required></div>
+<div class="field"><label>Senha</label><input class="inp" id="lp" type="password" required></div>
+<button class="btn" id="lb">Entrar</button><div class="err" id="leR"></div>
+</form>
+</div>
+</section>
+<section id="denied" class="center hidden"><div class="login"><h2>Acesso não autorizado</h2><p class="hint">Cadastre o UID desta conta na coleção admins seguindo o manual.</p><button class="btn alt" onclick="logout()">Sair</button></div></section>
+<div id="dash" class="hidden">
+<header><div class="brand"><div class="logo">F</div><div><h1>Finanças Admin</h1><p>Plano pessoal, casal e bloqueios</p></div></div><div><span id="ae"></span> · <button class="logout" onclick="logout()">Sair</button></div></header>
+<main class="page">
+<div class="stats">
+<div class="stat"><span>Cadastros</span><b id="s1">0</b></div>
+<div class="stat"><span>Ativos</span><b id="s2">0</b></div>
+<div class="stat"><span>Bloqueados</span><b id="s3">0</b></div>
+<div class="stat"><span>Casais</span><b id="s4">0</b></div>
+</div>
+<div class="layout">
+<aside class="panel">
+<div class="ph"><h2>Usuários</h2><p class="hint">Pesquise por e-mail ou UID.</p><div class="search"><input class="inp" id="q" placeholder="Pesquisar"><button class="btn alt" onclick="fresh()">Novo</button></div></div>
+<div class="list" id="list"></div>
+</aside>
+<section class="panel">
+<div class="ph"><h2 id="title">Cadastrar acesso</h2><p class="hint">Crie o usuário no Firebase Authentication antes.</p></div>
+<div class="form">
+<div class="note">No plano gratuito, o Firebase gera o UID manualmente. Cole o UID abaixo para liberar e controlar o acesso.</div>
+<div class="box">
+<h3>Usuário principal</h3>
+<div class="grid">
+<div class="field"><label>E-mail</label><input class="inp" id="ue" type="email"></div>
+<div class="field"><label>Nome</label><input class="inp" id="un"></div>
+</div>
+<div class="field"><label>UID do Authentication</label><input class="inp" id="uu"></div>
+<div class="grid">
+<div class="field"><label>Acesso</label><select class="inp" id="us"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></div>
+<div class="field"><label>Tipo de uso</label><select class="inp" id="um"><option value="personal">Pessoal</option><option value="couple">Casal</option></select></div>
+</div>
+</div>
+<div class="box hidden" id="partner">
+<h3>Parceiro(a)</h3>
+<div class="grid">
+<div class="field"><label>E-mail</label><input class="inp" id="pe" type="email"></div>
+<div class="field"><label>Nome</label><input class="inp" id="pn"></div>
+</div>
+<div class="field"><label>UID do parceiro</label><input class="inp" id="pu"></div>
+<div class="grid">
+<div class="field"><label>Acesso</label><select class="inp" id="ps"><option value="active">Ativo</option><option value="blocked">Bloqueado</option></select></div>
+<label class="check"><input type="checkbox" id="enabled" checked> Exibir opção de parceiro</label>
+</div>
+</div>
+<div class="actions">
+<button class="btn" id="save" onclick="save()">Salvar</button>
+<button class="btn red" onclick="statusChange('blocked',false)">Bloquear usuário</button>
+<button class="btn red hidden" id="bc" onclick="statusChange('blocked',true)">Bloquear casal</button>
+<button class="btn green" onclick="statusChange('active',false)">Ativar usuário</button>
+<button class="btn alt hidden" id="unlink" onclick="unlink()">Desvincular</button>
+</div>
+<p class="hint">O bloqueio impede o acesso aos dados. Para impedir também o login, desative o usuário no Firebase Authentication.</p>
+</div>
+</section>
+</div>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-app-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-auth-compat.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/firebase/9.23.0/firebase-firestore-compat.min.js"></script>
+<script>
+firebase.initializeApp({apiKey:"AIzaSyCJTjrAjqdT7mwzFp7es-QAHqT_GnasN8c",authDomain:"minhas-financas-318e8.firebaseapp.com",projectId:"minhas-financas-318e8",storageBucket:"minhas-financas-318e8.firebasestorage.app",messagingSenderId:"609331194331",appId:"1:609331194331:web:92b4cef8a317da91519ffe"});
+const auth=firebase.auth();
+const db=firebase.firestore();
+const FV=firebase.firestore.FieldValue;
+const $=id=>document.getElementById(id);
+let admin=null,data=[],chosen="";
+
+function view(id){
+ ["login","denied","dash"].forEach(x=>$(x).classList.toggle("hidden",x!==id));
+}
+function msg(text){
+ $("toast").textContent=text;
+ $("toast").classList.add("on");
+ clearTimeout(msg.timer);
+ msg.timer=setTimeout(()=>$("toast").classList.remove("on"),2500);
+}
+function mail(value){return String(value||"").trim().toLowerCase();}
+function nameOf(email){
+ return(mail(email).split("@")[0]||"Usuário").replace(/[._-]+/g," ").replace(/\b\w/g,c=>c.toUpperCase());
+}
+function esc(value){
+ return String(value||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+}
+
+$("loginForm").onsubmit=async event=>{
+ event.preventDefault();
+ $("leR").textContent="";
+ $("lb").disabled=true;
+ try{await auth.signInWithEmailAndPassword(mail($("le").value),$("lp").value);}
+ catch(error){
+  $("leR").textContent="E-mail, senha ou permissão inválidos.";
+  $("lb").disabled=false;
+ }
+};
+$("q").oninput=draw;
+$("um").onchange=mode;
+
+auth.onAuthStateChanged(async user=>{
+ admin=user;
+ $("lb").disabled=false;
+ if(!user){view("login");return;}
+ try{
+  const access=await db.collection("admins").doc(user.uid).get();
+  if(!access.exists||access.data().active!==true){view("denied");return;}
+  $("ae").textContent=user.email||user.uid;
+  view("dash");
+  await load();
+  fresh();
+ }catch(error){
+  console.error(error);
+  view("denied");
+ }
+});
+
+function logout(){auth.signOut();}
+async function load(){
+ const snapshot=await db.collection("access").get();
+ data=snapshot.docs.map(doc=>Object.assign({uid:doc.id},doc.data())).sort((a,b)=>mail(a.email).localeCompare(mail(b.email)));
+ $("s1").textContent=data.length;
+ $("s2").textContent=data.filter(item=>item.status==="active").length;
+ $("s3").textContent=data.filter(item=>item.status==="blocked").length;
+ $("s4").textContent=Math.ceil(data.filter(item=>item.mode==="couple"&&item.partnerUid).length/2);
+ draw();
+}
+function draw(){
+ const query=mail($("q").value);
+ const filtered=data.filter(item=>!query||mail(item.email).includes(query)||item.uid.toLowerCase().includes(query));
+ $("list").innerHTML=filtered.length?filtered.map(item=>{
+  const state=item.status==="blocked"?"blocked":"active";
+  return '<button class="row '+(chosen===item.uid?"on":"")+'" onclick="openOne(\''+esc(item.uid)+'\')"><span><b>'+esc(item.email||item.uid)+'</b><small>'+(item.mode==="couple"?"Casal":"Pessoal")+'</small></span><span class="tag '+state+'">'+(state==="blocked"?"Bloqueado":"Ativo")+'</span></button>';
+ }).join(""):'<div class="empty">Nenhum cadastro.</div>';
+}
+function fresh(){
+ chosen="";
+ ["ue","un","uu","pe","pn","pu"].forEach(id=>$(id).value="");
+ $("uu").disabled=false;
+ $("us").value="active";
+ $("um").value="personal";
+ $("ps").value="active";
+ $("enabled").checked=true;
+ $("title").textContent="Cadastrar acesso";
+ mode();
+ draw();
+}
+function mode(){
+ const couple=$("um").value==="couple";
+ $("partner").classList.toggle("hidden",!couple);
+ $("bc").classList.toggle("hidden",!couple);
+ $("unlink").classList.toggle("hidden",!couple);
+}
+async function openOne(uid){
+ try{
+  const result=await Promise.all([
+   db.collection("access").doc(uid).get(),
+   db.collection("users").doc(uid).get()
+  ]);
+  const access=result[0].data()||{};
+  const user=result[1].exists?result[1].data():{};
+  chosen=uid;
+  $("uu").value=uid;
+  $("uu").disabled=true;
+  $("ue").value=access.email||user.email||"";
+  $("un").value=access.displayName||user.nome||"";
+  $("us").value=access.status==="blocked"?"blocked":"active";
+  $("um").value=access.mode==="couple"?"couple":"personal";
+  $("pu").value=access.partnerUid||user.spouseUid||"";
+  $("pe").value=access.partnerEmail||"";
+  $("pn").value=access.partnerName||user.spouseName||"";
+  $("enabled").checked=access.partnerEnabled===true;
+  if(access.partnerUid){
+   const partner=await db.collection("access").doc(access.partnerUid).get();
+   if(partner.exists){
+    const partnerData=partner.data();
+    $("ps").value=partnerData.status==="blocked"?"blocked":"active";
+    $("pe").value=$("pe").value||partnerData.email||"";
+    $("pn").value=$("pn").value||partnerData.displayName||"";
+   }
+  }
+  $("title").textContent="Editar acesso";
+  mode();
+  draw();
+ }catch(error){
+  console.error(error);
+  msg("Erro ao carregar usuário");
+ }
+}
+function audit(batch,action,uid,details){
+ batch.set(db.collection("audit").doc(),{
+  action:action,
+  targetUid:uid,
+  details:details||{},
+  adminUid:admin.uid,
+  adminEmail:admin.email||"",
+  createdAt:FV.serverTimestamp()
+ });
+}
+async function save(){
+ const uid=$("uu").value.trim();
+ const email=mail($("ue").value);
+ const displayName=$("un").value.trim()||nameOf(email);
+ const accountMode=$("um").value;
+ const userStatus=$("us").value;
+ const partnerUid=$("pu").value.trim();
+ const partnerEmail=mail($("pe").value);
+ const partnerName=$("pn").value.trim()||nameOf(partnerEmail);
+ const partnerEnabled=accountMode==="couple"&&$("enabled").checked;
+ if(!uid||!email){msg("Informe e-mail e UID");return;}
+ if(chosen&&chosen!==uid){msg("O UID existente não pode mudar");return;}
+ if(accountMode==="couple"&&(!partnerUid||!partnerEmail)){msg("Informe e-mail e UID do parceiro");return;}
+ if(uid===partnerUid){msg("Os UIDs precisam ser diferentes");return;}
+ $("save").disabled=true;
+ try{
+  const oldSnapshot=await db.collection("access").doc(uid).get();
+  const oldAccess=oldSnapshot.exists?oldSnapshot.data():{};
+  const batch=db.batch();
+  const now=FV.serverTimestamp();
+  const accessData={
+   email:email,
+   displayName:displayName,
+   status:userStatus,
+   mode:accountMode,
+   partnerEnabled:partnerEnabled,
+   partnerUid:accountMode==="couple"?partnerUid:"",
+   partnerEmail:accountMode==="couple"?partnerEmail:"",
+   partnerName:accountMode==="couple"?partnerName:"",
+   updatedAt:now
+  };
+  if(!oldSnapshot.exists)accessData.createdAt=now;
+  batch.set(db.collection("access").doc(uid),accessData,{merge:true});
+  batch.set(db.collection("users").doc(uid),{
+   email:email,
+   nome:displayName,
+   spouseUid:accountMode==="couple"?partnerUid:"",
+   spouseName:accountMode==="couple"?partnerName:"Parceiro(a)"
+  },{merge:true});
+  if(accountMode==="couple"){
+   const partnerRef=db.collection("access").doc(partnerUid);
+   const partnerOld=await partnerRef.get();
+   const partnerAccess={
+    email:partnerEmail,
+    displayName:partnerName,
+    status:$("ps").value,
+    mode:"couple",
+    partnerEnabled:partnerEnabled,
+    partnerUid:uid,
+    partnerEmail:email,
+    partnerName:displayName,
+    updatedAt:now
+   };
+   if(!partnerOld.exists)partnerAccess.createdAt=now;
+   batch.set(partnerRef,partnerAccess,{merge:true});
+   batch.set(db.collection("users").doc(partnerUid),{
+    email:partnerEmail,
+    nome:partnerName,
+    spouseUid:uid,
+    spouseName:displayName
+   },{merge:true});
+  }
+  if(oldAccess.partnerUid&&oldAccess.partnerUid!==(accountMode==="couple"?partnerUid:"")){
+   const oldPartnerRef=db.collection("access").doc(oldAccess.partnerUid);
+   const oldPartner=await oldPartnerRef.get();
+   if(oldPartner.exists&&oldPartner.data().partnerUid===uid){
+    batch.set(oldPartnerRef,{
+     mode:"personal",
+     partnerEnabled:false,
+     partnerUid:"",
+     partnerEmail:"",
+     partnerName:"",
+     updatedAt:now
+    },{merge:true});
+    batch.set(db.collection("users").doc(oldAccess.partnerUid),{
+     spouseUid:"",
+     spouseName:"Parceiro(a)"
+    },{merge:true});
+   }
+  }
+  audit(batch,"save_access",uid,{
+   mode:accountMode,
+   status:userStatus,
+   partnerUid:accountMode==="couple"?partnerUid:""
+  });
+  await batch.commit();
+  chosen=uid;
+  msg("Configuração salva");
+  await load();
+  await openOne(uid);
+ }catch(error){
+  console.error(error);
+  msg("Erro ao salvar. Confira as regras.");
+ }finally{
+  $("save").disabled=false;
+ }
+}
+async function statusChange(state,includePartner){
+ const uid=chosen||$("uu").value.trim();
+ if(!uid){msg("Selecione um usuário");return;}
+ try{
+  const accessRef=db.collection("access").doc(uid);
+  const snapshot=await accessRef.get();
+  if(!snapshot.exists){msg("Acesso não encontrado");return;}
+  const batch=db.batch();
+  const now=FV.serverTimestamp();
+  batch.set(accessRef,{status:state,updatedAt:now},{merge:true});
+  if(includePartner&&snapshot.data().partnerUid){
+   batch.set(db.collection("access").doc(snapshot.data().partnerUid),{
+    status:state,
+    updatedAt:now
+   },{merge:true});
+  }
+  audit(batch,state==="blocked"?"block_access":"activate_access",uid,{couple:includePartner});
+  await batch.commit();
+  msg(state==="blocked"?"Acesso bloqueado":"Acesso ativado");
+  await load();
+  await openOne(uid);
+ }catch(error){
+  console.error(error);
+  msg("Erro ao alterar acesso");
+ }
+}
+function unlink(){
+ if(confirm("Desvincular o casal e deixar os dois como pessoais?")){
+  $("um").value="personal";
+  mode();
+  save();
+ }
+}
+</script>
+</body>
+</html>
