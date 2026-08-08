@@ -478,6 +478,8 @@ function catVar(nome,cm){if(cm&&cm!=='Outros')return cm;const n=nrm(nome);for(co
 const col=c=>PAL[c]||'#8E86A8';
 
 const key=(y,m)=>`${y||cY}-${m||cM}`;
+const mesNum=k=>{const[y,m]=String(k).split('-').map(Number);return y*12+m;};
+const fixaAtiva=(t,k)=>{const n=mesNum(k);return(!t.inicio||n>=mesNum(t.inicio))&&(!t.excluidaEm||n<mesNum(t.excluidaEm));};
 function initFixasGlobais(){
  if(Array.isArray(U.fixasGlobais))return;
  const porConta=new Map();
@@ -487,19 +489,20 @@ function initFixasGlobais(){
  });
  U.fixasGlobais=[...porConta.values()];
 }
-function syncFixas(d){
+function syncFixas(d,k=key()){
  initFixasGlobais();d.fixas=d.fixas||[];
- U.fixasGlobais.forEach(t=>{let f=d.fixas.find(x=>x.seriesId===t.seriesId);
+ const ativas=U.fixasGlobais.filter(t=>fixaAtiva(t,k));
+ ativas.forEach(t=>{let f=d.fixas.find(x=>x.seriesId===t.seriesId);
   if(!f)f=d.fixas.find(x=>!x.seriesId&&nrm(x.nome)===nrm(t.nome));
   if(f){f.seriesId=t.seriesId;f.nome=t.nome;f.valor=Number(t.valor);}
   else d.fixas.push({id:rid(),seriesId:t.seriesId,nome:t.nome,valor:Number(t.valor)});
  });
- d.fixas=d.fixas.filter(f=>!f.seriesId||U.fixasGlobais.some(t=>t.seriesId===f.seriesId));
+ d.fixas=d.fixas.filter(f=>{if(!f.seriesId){const t=ativas.find(x=>nrm(x.nome)===nrm(f.nome))||U.fixasGlobais.find(x=>nrm(x.nome)===nrm(f.nome));if(t)f.seriesId=t.seriesId;}return!f.seriesId||ativas.some(t=>t.seriesId===f.seriesId);});
 }
-function MD(y,m){const k=key(y,m);if(!U.months[k])U.months[k]={fixas:[],variaveis:[],extras:[],aportes:[],pagos:{},pagosVar:{}};const d=U.months[k];d.fixas=d.fixas||[];d.variaveis=d.variaveis||[];d.extras=d.extras||[];d.aportes=d.aportes||[];d.pagos=d.pagos||{};d.pagosVar=d.pagosVar||{};syncFixas(d);return d;}
+function MD(y,m){const k=key(y,m);if(!U.months[k])U.months[k]={fixas:[],variaveis:[],extras:[],aportes:[],pagos:{},pagosVar:{}};const d=U.months[k];d.fixas=d.fixas||[];d.variaveis=d.variaveis||[];d.extras=d.extras||[];d.aportes=d.aportes||[];d.pagos=d.pagos||{};d.pagosVar=d.pagosVar||{};syncFixas(d,k);return d;}
 function calc(md,sal){md=md||{};const fT=(md.fixas||[]).reduce((s,f)=>s+Number(f.valor||0),0),vT=(md.variaveis||[]).reduce((s,v)=>s+Number(v.valor||0),0),eT=(md.extras||[]).reduce((s,e)=>s+Number(e.valor||0),0),aT=(md.aportes||[]).reduce((s,a)=>s+Number(a.valor||0),0);const ent=Number(sal||0)+eT,tot=fT+vT+aT;return{fT,vT,eT,aT,tot,ent,saldo:ent-tot};}
-function propag(){initFixasGlobais();if(!U.fixasGlobais.length)return;Object.values(U.months||{}).forEach(syncFixas);for(let i=0;i<24;i++){let y=cY,m=cM+i;while(m>12){m-=12;y++;}MD(y,m);}}
-function propagNova(f){initFixasGlobais();U.fixasGlobais.push({seriesId:f.seriesId||rid(),nome:f.nome,valor:Number(f.valor)});propag();}
+function propag(){initFixasGlobais();if(!U.fixasGlobais.length)return;Object.entries(U.months||{}).forEach(([k,d])=>syncFixas(d,k));for(let i=0;i<24;i++){let y=cY,m=cM+i;while(m>12){m-=12;y++;}MD(y,m);}}
+function propagNova(f){initFixasGlobais();U.fixasGlobais.push({seriesId:f.seriesId||rid(),nome:f.nome,valor:Number(f.valor),inicio:key()});propag();}
 function save(){clearTimeout(tm);tm=setTimeout(async()=>{try{await db.collection('users').doc(uid).set(U);}catch(e){console.error(e);}},700);}
 
 const I={
@@ -688,7 +691,7 @@ function vFixas(md){
    <button class="ck ${p?'on':''}" onclick="togF('${f.id}')">${svg(I.chk)}</button>
    <div class="li-i"><div class="li-n">${esc(f.nome)}</div><div class="li-s">${p?'Pago':'Ainda não pago'}</div></div>
    <div class="li-v">${hv(f.valor)}</div>
-   <div class="li-a"><button class="ed" onclick="editF('${f.id}')" aria-label="Editar ${esc(f.nome)}" title="Editar">${svg(I.pen)}</button><button class="ed del" onclick="delFixa('${f.id}')" aria-label="Excluir ${esc(f.nome)}" title="Excluir de todos os meses">${svg(I.trash)}</button></div>
+   <div class="li-a"><button class="ed" onclick="editF('${f.id}')" aria-label="Editar ${esc(f.nome)}" title="Editar">${svg(I.pen)}</button><button class="ed del" onclick="delFixa('${f.id}')" aria-label="Excluir ${esc(f.nome)}" title="Excluir deste mês em diante">${svg(I.trash)}</button></div>
   </div>`;}).join('')}</div>`;
 }
 
@@ -935,10 +938,10 @@ function saveEditVar(){const id=document.getElementById('ev-id').value,n=documen
  const v=MD().variaveis.find(x=>x.id===id);if(v){v.nome=n;v.valor=vl;v.categoria=c;}
  closeSh();save();render();toast('Gasto atualizado');}
 function delFixa(id){const f=MD().fixas.find(x=>x.id===id);if(!f)return;
- if(!confirm(`Excluir “${f.nome}” de todos os meses?`))return;
- initFixasGlobais();U.fixasGlobais=U.fixasGlobais.filter(t=>t.seriesId!==f.seriesId);
- Object.values(U.months).forEach(md=>{const removidas=(md.fixas||[]).filter(x=>x.seriesId===f.seriesId);removidas.forEach(x=>delete (md.pagos||{})[x.id]);md.fixas=(md.fixas||[]).filter(x=>x.seriesId!==f.seriesId);});
- save();render();toast('Conta fixa excluída de todos os meses');}
+ const corte=key();if(!confirm(`Excluir “${f.nome}” de ${MN[cM-1].toLowerCase()} em diante? O histórico anterior será mantido.`))return;
+ initFixasGlobais();const t=U.fixasGlobais.find(x=>x.seriesId===f.seriesId);if(t)t.excluidaEm=corte;
+ Object.entries(U.months).forEach(([k,md])=>{if(mesNum(k)<mesNum(corte))return;const removidas=(md.fixas||[]).filter(x=>x.seriesId===f.seriesId);removidas.forEach(x=>delete (md.pagos||{})[x.id]);md.fixas=(md.fixas||[]).filter(x=>x.seriesId!==f.seriesId);});
+ save();render();toast(`Conta excluída de ${MN[cM-1].toLowerCase()} em diante`);}
 function delVar(id){const md=MD(),v=md.variaveis.find(x=>x.id===id);if(!v)return;
  if(!confirm(`Excluir “${v.nome}” somente de ${MN[cM-1].toLowerCase()}?`))return;
  md.variaveis=md.variaveis.filter(x=>x.id!==id);delete md.pagosVar[id];save();render();toast('Gasto excluído deste mês');}
