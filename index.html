@@ -60,6 +60,10 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 .a-err{background:rgba(255,156,176,.14);color:var(--rd);padding:11px 14px;border-radius:13px;font-size:12.5px;margin-bottom:14px;border:1px solid rgba(255,156,176,.24);display:none;position:relative;z-index:1}
 .a-sw{text-align:center;margin-top:18px;font-size:13px;color:var(--txt2);position:relative;z-index:1}
 .a-sw span{color:var(--pp);font-weight:700;cursor:pointer}
+#gate{display:none;flex-direction:column;align-items:center;justify-content:center;min-height:100vh;padding:28px;position:relative;z-index:3}
+.gate-card{padding:28px 24px;width:100%;max-width:390px;text-align:center}
+.gate-card h2{font-size:22px;margin:0 0 8px}.gate-card p{font-size:13px;color:var(--txt2);line-height:1.55;margin:0 0 18px}
+.gate-uid{font-size:11px;color:var(--pp);word-break:break-all;background:rgba(165,148,245,.11);border:1px solid rgba(165,148,245,.22);padding:11px;border-radius:12px;margin-bottom:14px}
 
 /* ── APP ── */
 #app{display:none;position:relative;z-index:2;padding-bottom:90px}
@@ -374,7 +378,14 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
   </div>
 </div>
 
-<div id="app"></div>
+<div id="gate">
+  <div class="gate-card g">
+    <h2 id="gate-title">Acesso pendente</h2>
+    <p id="gate-message">Seu acesso ainda não foi liberado pelo administrador.</p>
+    <div class="gate-uid">Seu UID<br><b id="gate-uid"></b></div>
+    <button class="btn" onclick="doLogout()">Sair da conta</button>
+  </div>
+</div>
 
 <!-- SHEETS -->
 <div class="ov" id="ov" onclick="closeSh()"></div>
@@ -415,8 +426,8 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 <div class="sh" id="sh-cg"><div class="sh-g"></div><div class="sh-t">Configurações</div>
   <div class="sf"><label>Seu nome</label><input class="inp" type="text" id="cg-nm" placeholder="Como quer ser chamado"></div>
   <div class="sf"><label>Valor mensal recebido</label><input class="inp" type="number" id="cg-sl" inputmode="decimal" placeholder="0,00"></div>
-  <div class="sf"><label>UID do parceiro(a)</label><input class="inp" type="text" id="cg-sp" placeholder="Cole o UID aqui" style="font-size:12.5px"></div>
-  <div class="sf"><label>Como chamar seu parceiro(a)</label><input class="inp" type="text" id="cg-sn" placeholder="Ex: Marina, Esposa, Marido..."></div>
+  <div class="uid" id="cg-plan">Plano pessoal</div>
+  <div class="uid" id="cg-partner">A opção de parceiro é controlada pelo administrador.</div>
   <div class="uid">Seu UID<br><b id="cg-uid"></b></div>
   <button class="btn" onclick="saveSettings()">Salvar</button>
   <button class="sh-d" onclick="doLogout()">Sair da conta</button></div>
@@ -459,10 +470,33 @@ const VS=[
 ];
 const ERRS={'auth/invalid-email':'E-mail inválido.','auth/user-not-found':'Usuário não encontrado.','auth/wrong-password':'Senha incorreta.','auth/invalid-credential':'E-mail ou senha incorretos.','auth/email-already-in-use':'E-mail já cadastrado.','auth/weak-password':'Senha muito curta (mín. 6 caracteres).','auth/too-many-requests':'Muitas tentativas. Aguarde um pouco.','auth/network-request-failed':'Sem conexão com a internet.'};
 
-let uid='',U={nome:'',salario:0,spouseUid:'',spouseName:'Parceiro(a)',cofrinhos:[],months:{}};
+let uid='',ACCESS=null,accessWatch=null,U={nome:'',salario:0,spouseUid:'',spouseName:'Parceiro(a)',cofrinhos:[],months:{}};
 let cY=MIN_Y,cM=MIN_M,tab='resumo',aFilt='mes',hide=false,pData=null,tm=null,isReg=false;
 (()=>{const d=new Date();cY=d.getFullYear();cM=d.getMonth()+1;if(cY<MIN_Y||(cY===MIN_Y&&cM<MIN_M)){cY=MIN_Y;cM=MIN_M;}})();
 const isDT=()=>window.innerWidth>=960;
+const partnerAllowed=()=>!!(ACCESS&&ACCESS.status==='active'&&ACCESS.mode==='couple'&&ACCESS.partnerEnabled===true&&ACCESS.partnerUid&&U.spouseUid===ACCESS.partnerUid);
+function showGate(title,message){
+ document.getElementById('auth').style.display='none';
+ document.getElementById('app').style.display='none';
+ document.getElementById('gate').style.display='flex';
+ document.getElementById('gate-title').textContent=title;
+ document.getElementById('gate-message').textContent=message;
+ document.getElementById('gate-uid').textContent=uid;
+}
+function hideGate(){document.getElementById('gate').style.display='none';}
+function watchAccess(){
+ if(accessWatch)accessWatch();
+ accessWatch=db.collection('access').doc(uid).onSnapshot(s=>{
+  if(!s.exists){ACCESS=null;showGate('Acesso pendente','Seu acesso ainda não foi liberado pelo administrador.');return;}
+  const previous=ACCESS;
+  ACCESS=s.data();
+  if(ACCESS.status!=='active'){pData=null;showGate('Acesso bloqueado','Este acesso foi bloqueado. Entre em contato com o administrador.');return;}
+  if(document.getElementById('gate').style.display==='flex'){location.reload();return;}
+  if(previous&&(previous.partnerUid!==ACCESS.partnerUid||previous.mode!==ACCESS.mode)){location.reload();return;}
+  if(!partnerAllowed())pData=null;
+  if(document.getElementById('app').style.display==='block')render();
+ },e=>console.error(e));
+}
 
 const nf=n=>(n||0).toLocaleString('pt-BR',{minimumFractionDigits:2,maximumFractionDigits:2});
 const fmt=n=>'R$ '+nf(n);
@@ -541,13 +575,23 @@ async function doAuth(){
 }
 auth.onAuthStateChanged(async u=>{
  if(u){uid=u.uid;
+  let accessDoc;
+  try{accessDoc=await db.collection('access').doc(uid).get();}
+  catch(e){console.error(e);showGate('Não foi possível validar o acesso','Confira sua conexão ou fale com o administrador.');return;}
+  if(!accessDoc.exists){showGate('Acesso pendente','Seu cadastro existe, mas ainda precisa ser liberado pelo administrador.');watchAccess();return;}
+  ACCESS=accessDoc.data();
+  if(ACCESS.status!=='active'){showGate('Acesso bloqueado','Este acesso foi bloqueado. Entre em contato com o administrador.');watchAccess();return;}
   try{const s=await db.collection('users').doc(uid).get();if(s.exists)U={nome:'',salario:0,spouseUid:'',spouseName:'Parceiro(a)',cofrinhos:[],months:{},...s.data()};}catch(e){console.error(e);}
   if(!U.nome)U.nome=(u.email||'').split('@')[0].replace(/[._]/g,' ').split(' ')[0].replace(/^./,c=>c.toUpperCase());
   U.email=u.email;propag();save();
+  hideGate();
   document.getElementById('auth').style.display='none';
   document.getElementById('app').style.display='block';
-  render();if(U.spouseUid)fetchP();
+  render();watchAccess();if(partnerAllowed())fetchP();
  }else{
+  if(accessWatch){accessWatch();accessWatch=null;}
+  uid='';ACCESS=null;pData=null;
+  hideGate();
   document.getElementById('auth').style.display='flex';
   document.getElementById('app').style.display='none';
   const b=document.getElementById('a-bt');b.disabled=false;b.textContent=isReg?'Criar conta':'Entrar';
@@ -625,7 +669,7 @@ function vResumo(md,c){
  const totIt=md.fixas.length+md.variaveis.length,pgIt=totIt-nfF.length-nfV.length;
  const pgPct=totIt?Math.round(pgIt/totIt*100):0;
  let pt='';
- if(U.spouseUid){
+ if(partnerAllowed()){
   if(pData){const pmd=(pData.months||{})[key()]||{},pc=calc(pmd,pData.salario||0),pn=(pmd.fixas||[]).filter(f=>!(pmd.pagos||{})[f.id]).length;
    pt=`<div class="pt g" onclick="openPartner()">
     <div class="pt-tag">Finanças da ${esc(U.spouseName||'parceira')}</div>
@@ -852,7 +896,7 @@ function drawDonut(){
 }
 
 async function fetchP(){
- if(!U.spouseUid)return;toast('Atualizando...');
+ if(!partnerAllowed()){toast('Opção de parceiro não habilitada');return;}toast('Atualizando...');
  try{const s=await db.collection('users').doc(U.spouseUid).get();pData=s.exists?s.data():null;render();toast(pData?'Dados atualizados':'Usuário não encontrado');}
  catch(e){console.error(e);toast('Erro ao atualizar');}
 }
@@ -883,17 +927,13 @@ function closeSh(){document.getElementById('ov').classList.remove('on');document
 function openCfg(){
  document.getElementById('cg-nm').value=U.nome||'';
  document.getElementById('cg-sl').value=U.salario||'';
- document.getElementById('cg-sp').value=U.spouseUid||'';
- document.getElementById('cg-sn').value=U.spouseName==='Parceiro(a)'?'':U.spouseName||'';
+ document.getElementById('cg-plan').textContent=ACCESS&&ACCESS.mode==='couple'?'Plano casal':'Plano pessoal';
+ document.getElementById('cg-partner').textContent=partnerAllowed()?'Parceiro: '+(ACCESS.partnerEmail||U.spouseName||ACCESS.partnerUid):'A opção de parceiro é controlada pelo administrador.';
  document.getElementById('cg-uid').textContent=uid;openSh('sh-cg');}
 function saveSettings(){
  U.nome=document.getElementById('cg-nm').value.trim()||U.nome;
  U.salario=parseFloat(document.getElementById('cg-sl').value)||0;
- const ns=document.getElementById('cg-sp').value.trim();
- if(ns!==U.spouseUid)pData=null;
- U.spouseUid=ns;
- U.spouseName=document.getElementById('cg-sn').value.trim()||'Parceiro(a)';
- closeSh();save();render();if(U.spouseUid)fetchP();toast('Configurações salvas');}
+ closeSh();save();render();if(partnerAllowed())fetchP();toast('Configurações salvas');}
 function doLogout(){closeSh();auth.signOut();}
 function addFixa(){const n=document.getElementById('fx-n').value.trim(),v=parseFloat(document.getElementById('fx-v').value);
  if(!n||isNaN(v)||v<=0){toast('Preencha nome e valor');return;}
