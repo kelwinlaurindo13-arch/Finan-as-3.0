@@ -258,70 +258,74 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 .emp .add-in{margin:16px auto 0}
 @media(max-width:959px){.fab{display:none}}
 @media(max-width:599px){
- #app.compact .hd{padding:calc(env(safe-area-inset-top) + 8px) 13px 7px;gap:8px}
- #app.compact .greet{font-size:11.5px}
- #app.compact .title{font-size:22px;letter-spacing:-.7px}
+ #app.compact{min-height:100dvh}
+ #app.compact .hd{padding:calc(env(safe-area-inset-top) + clamp(8px,1.2dvh,12px)) 13px clamp(7px,1dvh,10px);gap:8px}
+ #app.compact .greet{font-size:clamp(11.5px,1.5dvh,13px)}
+ #app.compact .title{font-size:clamp(22px,2.8dvh,25px);letter-spacing:-.7px}
  #app.compact .hd-r{gap:5px;margin-top:2px}
  #app.compact .mnav{padding:3px}
- #app.compact .mnav button{width:24px;height:27px}
- #app.compact .mnav span{font-size:12px;padding:0 3px}
- #app.compact .ib{width:35px;height:35px;border-radius:12px}
+ #app.compact .mnav button{width:clamp(24px,3dvh,27px);height:clamp(27px,3.4dvh,29px)}
+ #app.compact .mnav span{font-size:clamp(12px,1.55dvh,13px);padding:0 3px}
+ #app.compact .ib{width:clamp(35px,4.2dvh,38px);height:clamp(35px,4.2dvh,38px);border-radius:12px}
  #app.compact .wrap{padding:0 12px}
- #app.compact .hero{padding:14px;margin-bottom:8px;border-radius:20px}
+ #app.screen-resumo .wrap,#app.screen-anual .wrap{min-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 126px);display:flex;flex-direction:column;justify-content:space-between;gap:clamp(8px,1.1dvh,11px)}
+ #app.screen-resumo .wrap>*,#app.screen-anual .wrap>*{margin-bottom:0!important;flex-shrink:0}
+ #app.compact .hero{padding:clamp(14px,1.9dvh,18px);margin-bottom:clamp(8px,1.2dvh,11px);border-radius:20px}
  #app.compact .hero-top{gap:10px}
- #app.compact .hero-l{font-size:11.5px}
- #app.compact .hero-v{font-size:32px;letter-spacing:-1.5px}
- #app.compact .hero-v small{font-size:17px}
- #app.compact .chip{padding:4px 9px;font-size:10.5px;margin-top:8px}
- #app.compact .ring,#app.compact .ring svg{width:82px;height:82px}
- #app.compact .ring-n{font-size:19px}
- #app.compact .ring-n span{font-size:10px}
- #app.compact .ring-t{font-size:7.5px;margin-top:2px}
- #app.compact .pills{gap:6px;margin-top:11px}
- #app.compact .pl{padding:8px 9px;border-radius:13px}
- #app.compact .pl-l{font-size:9.5px}
- #app.compact .pl-v{font-size:13px}
- #app.compact .card{padding:12px;margin-bottom:8px;border-radius:20px}
- #app.compact .c-lbl{font-size:13.5px;margin-bottom:9px}
- #app.compact .fp-row{margin-bottom:7px}
- #app.compact .fp-t{font-size:13px}
- #app.compact .fp-v{font-size:14px}
- #app.compact .pbar{height:6px}
- #app.compact .fp-sub{margin-top:6px;font-size:10px}
- #app.compact .pt{padding:13px;margin-bottom:8px;border-radius:20px}
- #app.compact .pt-tag{font-size:8.5px;margin-bottom:6px}
- #app.compact .pt-h{font-size:14px;margin-bottom:8px;line-height:1.25}
+ #app.compact .hero-l{font-size:clamp(11.5px,1.5dvh,13px)}
+ #app.compact .hero-v{font-size:clamp(32px,4.2dvh,38px);letter-spacing:-1.5px}
+ #app.compact .hero-v small{font-size:clamp(17px,2.2dvh,20px)}
+ #app.compact .chip{padding:clamp(4px,.65dvh,6px) 9px;font-size:clamp(10.5px,1.35dvh,12px);margin-top:clamp(8px,1.2dvh,11px)}
+ #app.compact .ring,#app.compact .ring svg{width:clamp(82px,10.5dvh,98px);height:clamp(82px,10.5dvh,98px)}
+ #app.compact .ring svg{overflow:visible}
+ #app.compact .ring-n{font-size:clamp(19px,2.5dvh,23px)}
+ #app.compact .ring-n span{font-size:clamp(10px,1.3dvh,12px)}
+ #app.compact .ring-t{font-size:clamp(7.5px,1dvh,8.5px);margin-top:2px}
+ #app.compact .pills{gap:6px;margin-top:clamp(11px,1.7dvh,16px)}
+ #app.compact .pl{padding:clamp(8px,1.1dvh,10px) 9px;border-radius:13px}
+ #app.compact .pl-l{font-size:clamp(9.5px,1.25dvh,10.5px)}
+ #app.compact .pl-v{font-size:clamp(13px,1.7dvh,15px)}
+ #app.compact .card{padding:clamp(12px,1.7dvh,16px);margin-bottom:clamp(8px,1.2dvh,11px);border-radius:20px}
+ #app.compact .c-lbl{font-size:clamp(13.5px,1.75dvh,15px);margin-bottom:clamp(9px,1.2dvh,12px)}
+ #app.compact .fp-row{margin-bottom:clamp(7px,1dvh,10px)}
+ #app.compact .fp-t{font-size:clamp(13px,1.7dvh,15px)}
+ #app.compact .fp-v{font-size:clamp(14px,1.8dvh,16px)}
+ #app.compact .pbar{height:clamp(6px,.85dvh,8px)}
+ #app.compact .fp-sub{margin-top:clamp(6px,.9dvh,9px);font-size:clamp(10px,1.3dvh,11.5px)}
+ #app.compact .pt{padding:clamp(13px,1.7dvh,16px);margin-bottom:clamp(8px,1.2dvh,11px);border-radius:20px}
+ #app.compact .pt-tag{font-size:clamp(8.5px,1.1dvh,10px);margin-bottom:clamp(6px,.9dvh,9px)}
+ #app.compact .pt-h{font-size:clamp(14px,1.85dvh,16.5px);margin-bottom:clamp(8px,1.2dvh,11px);line-height:1.28}
  #app.compact .pt-g{gap:20px}
- #app.compact .pt-l{font-size:9.5px}
- #app.compact .pt-v{font-size:15px}
- #app.compact .pt-b{padding:4px 10px;font-size:10px;margin-top:8px}
- #app.compact .pt-r{padding:6px 11px;font-size:10px;margin-top:8px}
- #app.compact .sg{gap:7px}
- #app.compact .st{padding:9px 11px;border-radius:17px}
- #app.compact .st svg{width:16px;height:16px;margin-bottom:5px}
- #app.compact .st-l{font-size:10px;margin-bottom:1px}
- #app.compact .st-v{font-size:16px}
- #app.compact .st.delta .st-v{font-size:11px!important;margin-top:1px!important;line-height:1.2!important}
- #app.compact .seg{padding:3px;margin-bottom:8px;border-radius:14px}
- #app.compact .seg button{padding:8px;font-size:12px;border-radius:11px}
- #app.compact .ins{padding:13px;margin-bottom:8px;border-radius:20px}
- #app.compact .ins-t{font-size:8.5px;margin-bottom:8px;letter-spacing:1.3px}
- #app.compact .ins-h{font-size:16.5px;line-height:1.25;letter-spacing:-.4px}
- #app.compact .ins-d{margin:10px 0}
- #app.compact .ins-b{font-size:12px;line-height:1.42}
- #app.compact .hbar{height:32px;margin-bottom:9px}
- #app.compact .hseg{border-radius:8px;font-size:11px}
- #app.compact .hleg{gap:6px 10px}
- #app.compact .hl-i{gap:5px;font-size:10.5px}
- #app.compact .hl-d{width:7px;height:7px;border-radius:2px}
+ #app.compact .pt-l{font-size:clamp(9.5px,1.25dvh,11px)}
+ #app.compact .pt-v{font-size:clamp(15px,1.95dvh,17px)}
+ #app.compact .pt-b{padding:clamp(4px,.7dvh,6px) 10px;font-size:clamp(10px,1.3dvh,11.5px);margin-top:clamp(8px,1.1dvh,10px)}
+ #app.compact .pt-r{padding:clamp(6px,.85dvh,8px) 11px;font-size:clamp(10px,1.3dvh,11.5px);margin-top:clamp(8px,1.1dvh,10px)}
+ #app.compact .sg{gap:clamp(7px,1dvh,10px)}
+ #app.compact .st{padding:clamp(9px,1.4dvh,13px) 11px;border-radius:17px}
+ #app.compact .st svg{width:clamp(16px,2dvh,19px);height:clamp(16px,2dvh,19px);margin-bottom:clamp(5px,.8dvh,8px)}
+ #app.compact .st-l{font-size:clamp(10px,1.3dvh,11.5px);margin-bottom:1px}
+ #app.compact .st-v{font-size:clamp(16px,2.05dvh,18.5px)}
+ #app.compact .st.delta .st-v{font-size:clamp(11px,1.45dvh,13px)!important;margin-top:1px!important;line-height:1.2!important}
+ #app.compact .seg{padding:3px;margin-bottom:clamp(8px,1.2dvh,11px);border-radius:14px}
+ #app.compact .seg button{padding:clamp(8px,1.1dvh,10px);font-size:clamp(12px,1.55dvh,13.5px);border-radius:11px}
+ #app.compact .ins{padding:clamp(13px,1.8dvh,17px);margin-bottom:clamp(8px,1.2dvh,11px);border-radius:20px}
+ #app.compact .ins-t{font-size:clamp(8.5px,1.1dvh,10px);margin-bottom:clamp(8px,1.1dvh,11px);letter-spacing:1.3px}
+ #app.compact .ins-h{font-size:clamp(16.5px,2.15dvh,19px);line-height:1.3;letter-spacing:-.4px}
+ #app.compact .ins-d{margin:clamp(10px,1.4dvh,13px) 0}
+ #app.compact .ins-b{font-size:clamp(12px,1.55dvh,14px);line-height:1.45}
+ #app.compact .hbar{height:clamp(32px,4.2dvh,40px);margin-bottom:clamp(9px,1.2dvh,12px)}
+ #app.compact .hseg{border-radius:8px;font-size:clamp(11px,1.45dvh,13px)}
+ #app.compact .hleg{gap:clamp(6px,.9dvh,9px) 10px}
+ #app.compact .hl-i{gap:5px;font-size:clamp(10.5px,1.35dvh,12px)}
+ #app.compact .hl-d{width:clamp(7px,.95dvh,9px);height:clamp(7px,.95dvh,9px);border-radius:2px}
  #app.compact .dn-w{gap:10px}
- #app.compact .dn-c,#app.compact .dn-c svg{width:104px;height:104px}
- #app.compact .dn-t{font-size:7.5px}
- #app.compact .dn-v{font-size:13px}
- #app.compact .dn-l{gap:6px}
- #app.compact .dn-r{gap:6px;font-size:11.5px}
- #app.compact .dn-d{width:7px;height:7px}
- #app.compact .dn-pc{font-size:11px}
+ #app.compact .dn-c,#app.compact .dn-c svg{width:clamp(104px,13.5dvh,122px);height:clamp(104px,13.5dvh,122px)}
+ #app.compact .dn-t{font-size:clamp(7.5px,1dvh,9px)}
+ #app.compact .dn-v{font-size:clamp(13px,1.75dvh,16px)}
+ #app.compact .dn-l{gap:clamp(6px,.9dvh,9px)}
+ #app.compact .dn-r{gap:6px;font-size:clamp(11.5px,1.5dvh,13.5px)}
+ #app.compact .dn-d{width:clamp(7px,.95dvh,9px);height:clamp(7px,.95dvh,9px)}
+ #app.compact .dn-pc{font-size:clamp(11px,1.4dvh,12.5px)}
 }
 
 /* DESKTOP */
@@ -552,6 +556,8 @@ function render(){
  const app=document.getElementById('app');
  app.classList.toggle('dtk',isDT());
  app.classList.toggle('compact',!isDT()&&(tab==='resumo'||tab==='anual'));
+ app.classList.toggle('screen-resumo',!isDT()&&tab==='resumo');
+ app.classList.toggle('screen-anual',!isDT()&&tab==='anual');
  app.innerHTML=isDT()?dtShell():mbShell();
  if(tab==='anual')setTimeout(drawDonut,10);
 }
@@ -638,7 +644,7 @@ function vResumo(md,c){
     <div class="hero-v">${sp[0]}${sp[1]?`<small>,${sp[1]}</small>`:''}</div>
     ${chip}
    </div>
-   <div class="ring"><svg width="106" height="106" style="color:${rc}">
+   <div class="ring"><svg width="106" height="106" viewBox="0 0 106 106" preserveAspectRatio="xMidYMid meet" style="color:${rc}">
      <circle cx="53" cy="53" r="${R}" stroke="rgba(255,255,255,.10)" stroke-width="8" fill="none"/>
      <circle cx="53" cy="53" r="${R}" stroke="${rc}" stroke-width="8" fill="none" stroke-linecap="round" stroke-dasharray="${CC}" stroke-dashoffset="${CC*(1-pct/100)}"/>
     </svg><div class="ring-in"><div class="ring-n">${pct}<span>%</span></div><div class="ring-t">USADO</div></div></div>
