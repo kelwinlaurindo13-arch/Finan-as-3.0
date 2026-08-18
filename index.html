@@ -345,12 +345,12 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 /* DESKTOP */
 @media(min-width:960px){
   .add-in{display:none}
-  body{max-width:100%}
+  body{width:100%;max-width:none;margin:0}
   #app{padding-bottom:0;display:none}
   #app.dtk{display:block}
   #app.dtk .nav{display:none}
   #app.dtk .fab{right:calc(340px);bottom:30px}
-  .shell{display:grid;grid-template-columns:236px 1fr;min-height:100vh}
+  .shell{display:block;min-height:100vh}
   .side{position:fixed;top:0;left:0;width:236px;height:100vh;padding:28px 14px calc(env(safe-area-inset-bottom) + 20px);display:flex;flex-direction:column;z-index:50;background:rgba(255,255,255,.055);border-right:1px solid rgba(255,255,255,.11);backdrop-filter:blur(40px) saturate(190%);-webkit-backdrop-filter:blur(40px) saturate(190%);box-shadow:inset -1px 0 0 rgba(255,255,255,.06)}
   .side-b{font-size:17.5px;font-weight:800;letter-spacing:-.55px;padding:0 10px 4px}
   .side-e{font-size:10.5px;color:var(--txt3);padding:0 10px 18px;word-break:break-all;border-bottom:1px solid rgba(255,255,255,.08);margin-bottom:16px}
@@ -360,10 +360,16 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
   .side-i.on{background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.14);color:#fff;font-weight:700;box-shadow:inset 0 1px 0 rgba(255,255,255,.22)}
   .side-i svg{width:19px;height:19px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
   .side-f{display:flex;flex-direction:column;gap:5px;padding-top:14px;border-top:1px solid rgba(255,255,255,.08)}
-  .main{margin-left:236px;min-height:100vh}
-  .dhd{padding:28px 34px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
-  .dwrap{padding:0 34px 44px;max-width:1200px}
+  .main{width:calc(100% - 236px);margin-left:236px;min-width:0;min-height:100vh}
+  .dhd{width:100%;max-width:1188px;margin:0 auto;padding:28px 34px 16px;display:flex;align-items:flex-start;justify-content:space-between;gap:18px}
+  .dwrap{width:100%;max-width:1188px;margin:0 auto;padding:0 34px 44px}
+  #app.dtk .welcome{display:none}
+  #app.dtk .hero{padding:28px}
+  #app.dtk .hero-v{font-size:48px}
+  #app.dtk .card,#app.dtk .rst,#app.dtk .an-card,#app.dtk .an-total,#app.dtk .an-chart-card{padding:24px}
   .sg{grid-template-columns:repeat(4,1fr)}
+  .an-stats{grid-template-columns:repeat(4,1fr)}
+  .an-chart{height:210px}.an-bar-track{height:180px}
   .dn-l{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
   .sh{max-width:530px;border-radius:28px;bottom:auto;top:50%;transform:translate(-50%,-45%) scale(.96);opacity:0;pointer-events:none;border:1px solid rgba(255,255,255,.16);padding-bottom:30px}
   .sh.on{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
